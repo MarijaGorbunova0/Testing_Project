@@ -1,38 +1,20 @@
-# Täielik testimisprojekt "Kvaliteedijälg"
+How to work with firmware
+1. set the workspace for zephyr using this guide 
+2. clone in the workspace this repo 
+NOTE! before working or compile files don't forget to use virtual environment 
+```bash
+source .venv/bin/activate
+```
+3. Compile firmware 
 
-## Projekti sissejuhatus (20%)
-Mitmefaasiline õppeprojekt, mis ühendab avalikud API-d, GA4 sündmused, A/B eksperimendi, CI torustiku ning jõudlustestid ühtseks praktikakeskkonnaks. Tudengid loovad realistliku mini-toote, millel on FastAPI backend, HTML/JS frontend ja täielik testimispinu (pytest, Jest, integratsiooni- ja koormustestid).
+```bash
+west build -b stm32l4_icp -- -DBOARD_ROOT=$(pwd)
+```
 
-## Ajaraam (10 h)
-- Kokku 9 ülesannet × ~15 min aktiivset teostamist + kordused, arutelud ja raportid (~8 h).
-- Ülejäänud aeg planeerimiseks, tulemuste kogumiseks ja esitlusteks (~2 h).
+west build - Zephyr build team
 
-## Ülesannete rada (60%)
-1. **Testiplaan** – Struktureeri nõuded, riskid, tööriistad ja aktsepteerimiskriteeriumid kasutades `docs/testplan-template.md` malli.
-2. **Backend + avalikud API-d** – Käivita FastAPI `backend/` kaustas, koosta `/api/koond`, mis pärib JSONPlaceholderi ja Rick & Morty andmed ning normaliseerib need testitavasse skeemi.
-3. **Frontend + API sidumine** – Täienda `frontend/index.html`, et kuvada backendist saadud andmeid ja säilitada kasutaja variandi eelistus.
-4. **GA4 integreerimine** – Lisa `gtag.js` ja kohandatud sündmused `variant_vaade`/`variant_vahetus`, tõenda tulemused `docs/results/analytics/`.
-5. **A/B variandid** – Realiseeri kaks layout'i failis `frontend/ab.js`, loo toggle `app.js` abil ja salvesta olek `localStorage`-is, et testid saaksid seda kontrollida.
-6. **Pytest ühikutestid** – Kirjuta vähemalt viis testi `tests-python/` kaustas, mis kontrollivad JSON skeemi, tõrkeid ja ajatempli formaati.
-7. **Jest testid** – Rakenda vähemalt neli testi `tests-js/` kaustas, mis valideerivad A/B loogikat ja sündmuse keha.
-8. **Integratsioonitestid** – Kasuta `tests-integration/test_koostoime.py`, et jooksutada FastAPI klienti koos `responses`-põhiste mockidega ning logida tulemused.
-9. **GitHub Actions CI** – Täienda `.github/workflows/tests.yml`, mis käivitab Python ja JS testid ning salvestab artefaktid.
-10. **Locust koormustestid** – Käivita `tests-performance-locust/locustfile.py`, simuleeri 20–50 kasutajat ja arhiveeri koormuslogid `docs/results/locust/`.
-11. **Tulemuste dokumenteerimine** – Kogu raportid `docs/results/` struktuuri, lisa viited testiplaani ja lõpp-aruandesse.
+-b stm32l4_icp - board: which board we are building for
 
-> Repo sisaldab ainult näidiskoodi ja skelette. Kõik ülaltoodud sammud täidetakse tudengite poolt ning iga ülesanne kontrollitakse eraldi.
+-- - separator: further arguments for CMake
 
-### Käivitamine (kiirstart)
-- **Backend**: macOS/Linux – `cd backend && python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && cd .. && uvicorn backend.main:rakendus --reload`; Windows PowerShell – `cd backend; python -m venv .venv; .\.venv\Scripts\Activate.ps1; pip install -r requirements.txt; cd ..; uvicorn backend.main:rakendus --reload`.
-- **Frontend**: macOS/Linux – `cd frontend && python -m http.server 4173`; Windows – `cd frontend; python -m http.server 4173` ning ava `http://localhost:4173`.
-- **Pytest**: macOS/Linux – `source .venv/bin/activate && pytest tests-python tests-integration -v`; Windows – `.\.venv\Scripts\Activate.ps1; pytest tests-python tests-integration -v`.
-- **Jest**: `cd tests-js && npm install && npm test` (mõlemal platvormil sama).
-- **Locust**: macOS/Linux – `source .venv/bin/activate && locust -f tests-performance-locust/locustfile.py --headless -u 20 -r 2 --run-time 3m --host http://localhost:8000`; Windows – `.\.venv\Scripts\Activate.ps1; locust -f tests-performance-locust/locustfile.py --headless -u 20 -r 2 --run-time 3m --host http://localhost:8000`.
-
-## Lõpptoote nõuded (20%)
-- Täidetud testiplaan `docs/testplan.md` koos riskimaatriksi, ajajoone ja tööriistade tabeliga.
-- Töökorras backend ja frontend, mille käivitamine on kirjeldatud `backend/README.md` ja `frontend/README.md` failides.
-- Pytesti, Jesti, integratsiooni ja Locusti aruanded `docs/results/` alamkataloogides ning GA4 tõendus `analytics/` kaustas.
-- Läbitud GitHub Actions töövoog, mille logid on salvestatud `docs/results/ci/` või linkidena README-s.
-- Dokumenteeritud A/B katse otsused ja mõõdikud koos soovitustega järgmisteks iteratsioonideks.
-
+-DBOARD_ROOT=$(pwd) - where to look for the board: in the current directory (pwd)
